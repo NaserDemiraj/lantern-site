@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- GitHub Pages serves this file for any missing path, so anchor relative links to the site root -->
-  <base href="/lantern-site/">
+  <!-- This file is served for any missing path, so anchor relative links to the site root:
+       /lantern-site/ on GitHub Pages, / on Vercel or any other host -->
+  <script>(function () { var b = document.createElement('base'); b.href = location.hostname.endsWith('github.io') ? '/lantern-site/' : '/'; document.head.appendChild(b); })();</script>
   <title>Page not found | Lantern</title>
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#131209">

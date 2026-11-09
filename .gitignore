@@ -1,2 +1,7 @@
 # local design review snapshots (impeccable)
 .impeccable/
+
+# vercel project link
+.vercel/
+
+.vercel
