@@ -52,6 +52,23 @@
   const bar = document.querySelector('.rescue-progress span');
   const [prevBtn, nextBtn] = document.querySelectorAll('.round-btn');
 
+  // the chart follows the timeline: each moment reveals its part of the night
+  const chart = document.querySelector('.chart');
+  const chartParts = chart ? [...chart.querySelectorAll('[data-from]')] : [];
+  const route = chart && chart.querySelector('.route');
+  const routeLeft = [1, 1, 1, 0.62, 0.1, 0]; // how much of the lifeboat's route is still to draw
+  let chartStep = -1;
+  const syncChart = (stepIndex) => {
+    if (!chart || stepIndex === chartStep) return;
+    chartStep = stepIndex;
+    chart.dataset.step = stepIndex;
+    chartParts.forEach((el) => el.classList.toggle('on', Number(el.dataset.from) <= stepIndex));
+    route.style.strokeDashoffset = routeLeft[stepIndex];
+    const m = moments[stepIndex];
+    chart.querySelector('.chart-time').textContent = m.querySelector('.moment-time').textContent;
+    chart.querySelector('.chart-what').textContent = m.querySelector('h3').textContent;
+  };
+
   let rTick = false;
   const updateRescue = () => {
     rTick = false;
@@ -66,6 +83,7 @@
       m.classList.toggle('is-lit', lit);
       if (lit) lastLit = m;
     });
+    syncChart(lastLit ? moments.indexOf(lastLit) : 0);
     const lineBox = line.getBoundingClientRect();
     const dotX = lastLit ? lastLit.querySelector('.moment-dot').getBoundingClientRect().left + 8 : lineBox.left;
     fill.style.transform = `scaleX(${Math.min(1, Math.max(0, (dotX - lineBox.left) / lineBox.width))})`;
@@ -215,7 +233,34 @@
   const input = form.querySelector('#email');
   const msg = form.querySelector('.form-msg');
   const row = form.querySelector('.field-row');
-  const btn = form.querySelector('button');
+  const btn = form.querySelector('button[type="submit"]');
+
+  // how many beacons, with a live summary
+  const qty = form.querySelector('#qty');
+  const stepBtns = [...form.querySelectorAll('.stepper-btn')];
+  const PRICE = 249;
+  const count = () => Math.min(12, Math.max(1, parseInt(qty ? qty.value : '1', 10) || 1));
+  const renderQty = () => {
+    if (!qty) return;
+    const n = count();
+    qty.value = n;
+    form.querySelectorAll('.sum-qty').forEach((el) => { el.textContent = n; });
+    form.querySelectorAll('.sum-total').forEach((el) => { el.textContent = (n * PRICE).toLocaleString('en-GB'); });
+    stepBtns[0].disabled = n <= 1;
+    stepBtns[1].disabled = n >= 12;
+  };
+  stepBtns.forEach((b) => b.addEventListener('click', () => { qty.value = count() + Number(b.dataset.step); renderQty(); }));
+  if (qty) {
+    qty.addEventListener('input', () => {
+      if (qty.value === '') return;
+      const n = count();
+      form.querySelectorAll('.sum-qty').forEach((el) => { el.textContent = n; });
+      form.querySelectorAll('.sum-total').forEach((el) => { el.textContent = (n * PRICE).toLocaleString('en-GB'); });
+    });
+    qty.addEventListener('change', renderQty);
+    renderQty();
+  }
+
   const showError = (text) => {
     msg.textContent = text; msg.classList.add('is-error');
     row.classList.add('has-error'); input.setAttribute('aria-invalid', 'true'); input.focus();
@@ -231,11 +276,34 @@
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)) return showError('That email looks incomplete. Check it has an @ and a domain, like name@example.com.');
     btn.disabled = true; btn.textContent = 'Reserving…';
     setTimeout(() => { // design concept: no backend, so nothing is actually sent
+      const n = count();
       btn.disabled = false; btn.textContent = 'Reserve your beacon';
-      form.reset();
+      form.reset(); renderQty();
       msg.classList.remove('is-error');
-      msg.textContent = `Reserved for ${value}. We will email you a week before it ships.`;
+      msg.textContent = `Reserved ${n === 1 ? 'one beacon' : n + ' beacons'} for ${value}. We will email you a week before they ship.`;
     }, 900);
   });
+  }
+
+  /* ---------- FAQ topics ---------- */
+  const chips = [...document.querySelectorAll('.chip')];
+  if (chips.length) {
+    const questions = [...document.querySelectorAll('.faq-list details')];
+    const status = document.querySelector('.faq-status');
+    chips.forEach((chip) => chip.addEventListener('click', () => {
+      const topic = chip.dataset.topic;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      let shown = 0;
+      questions.forEach((q) => {
+        const match = topic === 'all' || q.dataset.topic === topic;
+        q.hidden = !match;
+        if (match) shown++;
+      });
+      const label = topic === 'all' ? 'all' : chip.firstChild.textContent.trim().toLowerCase();
+      status.textContent = topic === 'all' ? `Showing all ${shown} questions` : `Showing ${shown} questions about ${label}`;
+      if (hasGsap && !reduceMotion) {
+        gsap.fromTo(questions.filter((q) => !q.hidden), { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.05, ease: 'power3.out', clearProps: 'transform,opacity' });
+      }
+    }));
   }
 })();
