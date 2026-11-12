@@ -130,7 +130,9 @@
     // hero: the camera drifts toward the boat and the beam brightens as you leave
     if (hero) gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 } })
       .to('.hero-media', { scale: 1.22, yPercent: 6, ease: 'none' }, 0)
-      .to('.hero-video, .hero-poster', { filter: 'brightness(1.35) saturate(1.1)', ease: 'none' }, 0)
+      // explicit start values: from filter "none", GSAP would start at brightness(0) and
+      // turn the hero black on the way back up
+      .fromTo('.hero-video, .hero-poster', { filter: 'brightness(1) saturate(1)' }, { filter: 'brightness(1.35) saturate(1.1)', ease: 'none', immediateRender: false }, 0)
       .to('.hero-scrim', { opacity: 0, ease: 'none' }, 0)
       .to('.hero-inner', { yPercent: -18, opacity: 0, ease: 'none' }, 0)
       .to('.video-toggle', { opacity: 0, ease: 'none' }, 0);
