@@ -38,7 +38,7 @@
 
   <main id="main">
     <section class="page-header" aria-labelledby="page-title">
-      <div class="page-header-media" aria-hidden="true"><img src="assets/sea-storm.jpg" alt="" style="--pos: 18% 30%; --zoom: 1.7"></div>
+      <div class="page-header-media" aria-hidden="true"><canvas class="sea" data-beam="0.62" data-sweep="0.18" data-swell="1" data-rain="0.5"></canvas></div>
       <div class="page-header-scrim" aria-hidden="true"></div>
       <div class="container page-header-inner">
         <h1 class="heading-1 page-title" id="page-title">Questions sailors ask us</h1>
@@ -49,39 +49,47 @@
     <section class="section faq" aria-label="Answers">
       <div class="container faq-grid">
         <div class="faq-aside">
-          <h2 class="heading-6">Still wondering?</h2>
+          <h2 class="heading-6" id="topics-title">Topics</h2>
+          <div class="chips" role="group" aria-labelledby="topics-title">
+            <button class="chip button-sm" type="button" data-topic="all" aria-pressed="true">All <span class="chip-count">8</span></button>
+            <button class="chip button-sm" type="button" data-topic="using" aria-pressed="false">Using it <span class="chip-count">3</span></button>
+            <button class="chip button-sm" type="button" data-topic="rules" aria-pressed="false">Registration and rules <span class="chip-count">3</span></button>
+            <button class="chip button-sm" type="button" data-topic="buying" aria-pressed="false">Buying <span class="chip-count">2</span></button>
+          </div>
+          <p class="caption-2 muted faq-status" role="status" aria-live="polite">Showing all 8 questions</p>
+          <h2 class="heading-6 faq-contact-title">Still wondering?</h2>
           <p class="body-6 muted">Write to the crew at <a class="text-link" href="mailto:crew@lantern.example">crew@lantern.example</a>. A person who sails answers within a day.</p>
         </div>
         <div class="faq-list reveal-stagger">
-          <details>
+          <details data-topic="buying">
             <summary class="title-2">Do I need a subscription?<span class="plus" aria-hidden="true"></span></summary>
             <p class="body-6 muted">No. The distress network is run by search and rescue authorities and is free to use. You pay for the beacon once.</p>
           </details>
-          <details>
+          <details data-topic="using">
             <summary class="title-2">Does it work without phone signal?<span class="plus" aria-hidden="true"></span></summary>
             <p class="body-6 muted">Yes. Lantern talks to the Cospas Sarsat satellites on 406 MHz, the frequency every rescue centre listens to, not to phone masts. It works anywhere with a clear view of the sky.</p>
           </details>
-          <details>
+          <details data-topic="using">
             <summary class="title-2">Will it work if I am in the water?<span class="plus" aria-hidden="true"></span></summary>
             <p class="body-6 muted">Yes. It floats with the antenna up and keeps transmitting. For the best fix, hold it above the surface if you can.</p>
           </details>
-          <details>
+          <details data-topic="rules">
             <summary class="title-2">Do I have to register it?<span class="plus" aria-hidden="true"></span></summary>
             <p class="body-6 muted">Yes, in most countries it is a legal requirement, and it lets rescuers know who and what they are looking for. We send you a prefilled form with the beacon's unique ID. It takes about five minutes.</p>
           </details>
-          <details>
+          <details data-topic="rules">
             <summary class="title-2">What if I press it by accident?<span class="plus" aria-hidden="true"></span></summary>
             <p class="body-6 muted">Switch it off and call your coastguard to cancel the alert. Accidental activations reported promptly carry no penalty.</p>
           </details>
-          <details>
+          <details data-topic="using">
             <summary class="title-2">How do I know it still works?<span class="plus" aria-hidden="true"></span></summary>
             <p class="body-6 muted">Press the self test button once a month. A green flash confirms the battery, GPS and transmitter without sending an alert.</p>
           </details>
-          <details>
+          <details data-topic="rules">
             <summary class="title-2">Can I take it on a plane?<span class="plus" aria-hidden="true"></span></summary>
             <p class="body-6 muted">Yes, in cabin baggage. Keep the cap on so it cannot be activated in transit.</p>
           </details>
-          <details>
+          <details data-topic="buying">
             <summary class="title-2">When will my beacon arrive?<span class="plus" aria-hidden="true"></span></summary>
             <p class="body-6 muted">The second run ships in March 2027, in reservation order. We email you a week before it ships, and that is when you pay.</p>
           </details>
@@ -115,5 +123,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="main.js"></script>
+  <script src="sea.js"></script>
 </body>
 </html>

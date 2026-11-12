@@ -38,7 +38,7 @@
 
   <main id="main">
     <section class="page-header page-header-short" aria-labelledby="page-title">
-      <div class="page-header-media" aria-hidden="true"><img src="assets/sea-storm.jpg" alt="" style="--pos: 50% 8%; --zoom: 2"></div>
+      <div class="page-header-media" aria-hidden="true"><canvas class="sea" data-beam="0.7" data-swell="0.5" data-rain="0.15" data-horizon="0.5"></canvas></div>
       <div class="page-header-scrim" aria-hidden="true"></div>
       <div class="container page-header-inner">
         <h1 class="heading-1 page-title" id="page-title">Reserve your beacon</h1>
@@ -52,7 +52,27 @@
           <h2 class="heading-5">Hold one from the second run</h2>
           <p class="body-6 muted reserve-sub">We only need your email. You confirm and pay a week before it ships.</p>
           <form class="reserve-form" method="post" novalidate>
-            <label class="title-4" for="email">Email</label>
+            <div class="qty-row">
+              <div>
+                <label class="title-4" for="qty">How many beacons?</label>
+                <p class="caption-2 muted" id="qty-hint">One for every lifejacket aboard.</p>
+              </div>
+              <div class="stepper">
+                <button class="stepper-btn" type="button" data-step="-1" aria-label="One fewer beacon" aria-controls="qty">
+                  <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8Z"/></svg>
+                </button>
+                <input class="title-2" id="qty" name="quantity" type="number" inputmode="numeric" min="1" max="12" value="1" aria-describedby="qty-hint">
+                <button class="stepper-btn" type="button" data-step="1" aria-label="One more beacon" aria-controls="qty">
+                  <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8h-80v80a8 8 0 0 1-16 0v-80H40a8 8 0 0 1 0-16h80V40a8 8 0 0 1 16 0v80h80a8 8 0 0 1 8 8Z"/></svg>
+                </button>
+              </div>
+            </div>
+            <dl class="summary">
+              <div><dt class="body-6 muted"><span class="sum-qty">1</span> × £249</dt><dd class="body-5">£<span class="sum-total">249</span></dd></div>
+              <div><dt class="body-6 muted">Due today</dt><dd class="body-5">£0</dd></div>
+              <div class="summary-due"><dt class="body-5">Due when it ships in March 2027</dt><dd class="title-2">£<span class="sum-total">249</span></dd></div>
+            </dl>
+            <label class="title-4 email-label" for="email">Email</label>
             <div class="field-row">
               <input class="body-3" id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required aria-describedby="email-msg email-note">
               <button class="btn btn-primary button-md" type="submit">Reserve your beacon</button>
@@ -66,7 +86,7 @@
           <h2 class="heading-6">What happens next</h2>
           <ol class="next-steps reveal-stagger">
             <li><span class="next-num title-4" aria-hidden="true">1</span><div><h3 class="title-2">You reserve today</h3><p class="body-6 muted">Your place in the second run is held in the order you reserved.</p></div></li>
-            <li><span class="next-num title-4" aria-hidden="true">2</span><div><h3 class="title-2">We email you in March</h3><p class="body-6 muted">A week before shipping, you confirm your address and pay £249.</p></div></li>
+            <li><span class="next-num title-4" aria-hidden="true">2</span><div><h3 class="title-2">We email you in March</h3><p class="body-6 muted">A week before shipping, you confirm your address and pay £249 per beacon.</p></div></li>
             <li><span class="next-num title-4" aria-hidden="true">3</span><div><h3 class="title-2">It arrives ready to register</h3><p class="body-6 muted">With a prefilled registry form, a lanyard and a seven year warranty.</p></div></li>
           </ol>
           <ul class="assurances">
@@ -92,5 +112,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="main.js"></script>
+  <script src="sea.js"></script>
 </body>
 </html>

@@ -38,7 +38,7 @@
 
   <main id="main">
     <section class="page-header" aria-labelledby="page-title">
-      <div class="page-header-media" aria-hidden="true"><img src="assets/sea-storm.jpg" alt="" style="--pos: 50% 86%; --zoom: 2.2"></div>
+      <div class="page-header-media" aria-hidden="true"><canvas class="sea" data-beam="0.74" data-swell="1.5" data-rain="1"></canvas></div>
       <div class="page-header-scrim" aria-hidden="true"></div>
       <div class="container page-header-inner">
         <h1 class="heading-1 page-title" id="page-title">One press. Forty one minutes.</h1>
@@ -61,6 +61,79 @@
             <svg viewBox="0 0 256 256" aria-hidden="true"><path d="m221.66 133.66-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg>
           </button>
         </div>
+      </div>
+
+      <div class="container">
+        <figure class="chart reveal-rise" data-step="0">
+          <div class="chart-scroll" tabindex="0" aria-label="Chart of the rescue. Scroll sideways on small screens.">
+          <svg class="chart-svg" viewBox="0 0 1200 440" role="img" aria-labelledby="chart-caption">
+            <!-- lat / long grid -->
+            <g class="chart-grid">
+              <line x1="0" y1="110" x2="1200" y2="110"/><line x1="0" y1="220" x2="1200" y2="220"/><line x1="0" y1="330" x2="1200" y2="330"/>
+              <line x1="200" y1="0" x2="200" y2="440"/><line x1="500" y1="0" x2="500" y2="440"/><line x1="800" y1="0" x2="800" y2="440"/><line x1="1100" y1="0" x2="1100" y2="440"/>
+            </g>
+            <g class="chart-grid-labels">
+              <text x="8" y="104">51°30′N</text><text x="8" y="214">51°25′N</text><text x="8" y="324">51°20′N</text>
+              <text x="206" y="432">10°20′W</text><text x="506" y="432">10°00′W</text><text x="806" y="432">9°40′W</text>
+            </g>
+            <!-- coast: Beara, Sheep's Head and the Mizen peninsula, stylised -->
+            <g class="chart-land">
+              <path d="M690 0H1200V44C1120 52 1010 58 930 74C880 84 820 98 760 96C720 94 700 74 690 52Z"/>
+              <path d="M1200 92V134C1110 140 990 150 880 158C830 162 790 160 772 150C800 132 850 124 910 116C1010 104 1110 96 1200 92Z"/>
+              <path d="M1200 176V306C1120 300 1040 292 950 276C860 262 760 252 690 238C660 232 640 222 640 214C668 198 720 194 800 190C930 184 1080 178 1200 176Z"/>
+            </g>
+            <g class="chart-places">
+              <circle cx="822" cy="90" r="5"/><text x="836" y="94">Castletownbere</text>
+              <text x="1080" y="78">Bantry Bay</text>
+              <text x="540" y="210">Mizen Head</text>
+            </g>
+            <!-- 0: the fall, and Saoirse sailing on without her -->
+            <g class="ch" data-from="0">
+              <path class="draw track-boat" pathLength="1" d="M300 340C250 352 190 366 130 378C90 386 50 392 0 398"/>
+              <text class="ch-note" x="40" y="380">Saoirse sails on</text>
+              <circle class="mark-fall" cx="300" cy="340" r="7"/>
+              <text class="ch-label" x="246" y="372">22:38</text>
+            </g>
+            <!-- 1: the press -->
+            <g class="ch" data-from="1">
+              <circle class="pulse" cx="300" cy="340" r="10"/>
+            </g>
+            <!-- 2: up to the satellite and down to the rescue centre -->
+            <g class="ch" data-from="2">
+              <path class="draw signal" pathLength="1" d="M300 334V30"/>
+              <circle class="sat" cx="300" cy="24" r="6"/>
+              <text class="ch-label" x="314" y="28">Satellite, 406 MHz</text>
+              <path class="draw signal" pathLength="1" d="M306 26C520 0 760 -6 1200 18"/>
+              <text class="ch-note" x="890" y="30">to the rescue centre</text>
+            </g>
+            <!-- her drift, a fresh position every five minutes -->
+            <g class="pings">
+              <circle data-from="2" cx="316" cy="338" r="3"/>
+              <circle data-from="3" cx="334" cy="335" r="3"/><circle data-from="3" cx="350" cy="332" r="3"/>
+              <circle data-from="4" cx="364" cy="329" r="3"/><circle data-from="4" cx="376" cy="327" r="3"/><circle data-from="4" cx="387" cy="325" r="3"/>
+              <circle data-from="5" cx="396" cy="323" r="4"/>
+            </g>
+            <!-- 3 to 5: the lifeboat's route from Castletownbere -->
+            <path class="route" pathLength="1" d="M822 98C780 122 720 150 680 170C640 190 600 205 560 238C510 280 450 312 400 323"/>
+            <g class="ch" data-from="4">
+              <circle class="strobe" cx="396" cy="323" r="16"/>
+            </g>
+            <g class="ch" data-from="5">
+              <text class="ch-label ch-end" x="410" y="352">Aboard, 23:20</text>
+            </g>
+            <!-- scale and north -->
+            <g class="chart-key">
+              <line x1="1010" y1="404" x2="1130" y2="404"/><line x1="1010" y1="398" x2="1010" y2="410"/><line x1="1130" y1="398" x2="1130" y2="410"/>
+              <text x="1040" y="394">2 nautical miles</text>
+              <path d="M1170 380l8 22-8-5-8 5Z"/><text x="1165" y="374">N</text>
+            </g>
+          </svg>
+          </div>
+          <figcaption class="chart-caption" id="chart-caption" aria-live="polite">
+            <span class="chart-time heading-6">22:38</span>
+            <span class="body-5 chart-what">A wave lays her flat</span>
+          </figcaption>
+        </figure>
       </div>
 
       <div class="rescue-scroller" id="rescue-scroller" tabindex="0" role="region" aria-label="Rescue timeline. Scroll sideways or use the arrow keys.">
@@ -165,5 +238,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="main.js"></script>
+  <script src="sea.js"></script>
 </body>
 </html>
