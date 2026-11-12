@@ -24,12 +24,10 @@
     stage.classList.add('no-webgl');
     return;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -44,9 +42,6 @@
   const beam = new THREE.SpotLight(0xF2B866, 70, 12, 0.36, 0.6, 1.6);
   beam.position.set(0.35, 4.2, 1.6);
   beam.target.position.set(0, 0, 0);
-  beam.castShadow = true;
-  beam.shadow.mapSize.set(1024, 1024);
-  beam.shadow.bias = -0.0004;
   scene.add(beam, beam.target);
   scene.add(new THREE.HemisphereLight(0x3a3a46, 0x131209, 0.6));
   const rim = new THREE.DirectionalLight(0x8fa4c4, 0.9); // cold storm light from behind
@@ -62,15 +57,14 @@
   const gold = new THREE.MeshStandardMaterial({ color: 0xF2B866, roughness: 0.35, metalness: 0.2, emissive: 0x7a4a10, emissiveIntensity: 0.25 });
   const darkRubber = new THREE.MeshStandardMaterial({ color: 0x15140f, roughness: 0.9 });
   const tape = new THREE.MeshStandardMaterial({ color: 0xc9ccd1, roughness: 0.25, metalness: 0.8 });
-  const capMat = new THREE.MeshPhysicalMaterial({ color: 0xF2B866, roughness: 0.2, transmission: 0.55, thickness: 0.05, transparent: true, opacity: 0.85 });
-  const domeMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.08, transmission: 0.9, thickness: 0.12, ior: 1.45, emissive: 0xfff4e0, emissiveIntensity: 0 });
+  const capMat = new THREE.MeshStandardMaterial({ color: 0xF2B866, roughness: 0.25, metalness: 0.1, transparent: true, opacity: 0.72 });
+  const domeMat = new THREE.MeshStandardMaterial({ color: 0xf4f1ea, roughness: 0.1, metalness: 0, transparent: true, opacity: 0.88, emissive: 0xfff4e0, emissiveIntensity: 0 });
 
   // ---------- Model (units: 1 = 100 mm; real size 92 × 48 × 31 mm) ----------
   const beacon = new THREE.Group();
   const W = 0.48, H = 0.92, D = 0.31;
 
   const body = new THREE.Mesh(new RoundedBoxGeometry(W, H, D, 6, 0.09), graphite);
-  body.castShadow = body.receiveShadow = true;
   beacon.add(body);
 
   // printed label: wordmark, two-step instructions, frequency and the self test mark
@@ -151,10 +145,18 @@
   scene.add(beacon);
 
   // a soft pool of light on the "water" under the beacon
-  const floor = new THREE.Mesh(new THREE.CircleGeometry(2.2, 64), new THREE.ShadowMaterial({ opacity: 0.45 }));
+  const blobCanvas = document.createElement('canvas');
+  blobCanvas.width = blobCanvas.height = 128;
+  const bc = blobCanvas.getContext('2d');
+  const blobGrad = bc.createRadialGradient(64, 64, 4, 64, 64, 62);
+  blobGrad.addColorStop(0, 'rgba(0,0,0,0.55)'); blobGrad.addColorStop(1, 'rgba(0,0,0,0)');
+  bc.fillStyle = blobGrad; bc.fillRect(0, 0, 128, 128);
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.1, 0.7),
+    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(blobCanvas), transparent: true, depthWrite: false })
+  );
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = -0.62;
-  floor.receiveShadow = true;
   scene.add(floor);
 
   // ---------- Sizing ----------
