@@ -215,6 +215,7 @@
 
   // ---------- Try it: lift the cap, press, watch it call for help ----------
   // mode: 'closed' | 'open' (cap lifted) | 'fixing' (amber, finding GPS) | 'active' (alert sent)
+  let wasFlashOn = false;
   let mode = 'closed', modeAt = 0, capTarget = 0, capAngle = 0, pressDepth = 0;
   const controls = stage.parentElement.querySelector('.beacon-controls');
   const statusEl = controls && controls.querySelector('.beacon-status');
@@ -307,7 +308,7 @@
     capPivot.rotation.x = -capAngle * 0.95;
 
     const since = t - modeAt;
-    if (mode === 'fixing' && since > 1.6) setMode('active');
+    if (mode === 'fixing' && since > 1.6) { setMode('active'); document.dispatchEvent(new CustomEvent('lantern:alert')); }
     // the button sinks while pressed, then springs back
     pressDepth += ((mode === 'fixing' && since < 0.9 ? 1 : 0) - pressDepth) * 0.3;
     button.position.z = D / 2 + 0.018 - pressDepth * 0.012;
@@ -317,6 +318,8 @@
     if (mode === 'active') {
       const c = since % 2;
       const on = c < 0.07 || (c > 0.22 && c < 0.29);
+      if (on && !wasFlashOn && !reduceMotion) document.dispatchEvent(new CustomEvent('lantern:strobe'));
+      wasFlashOn = on;
       domeMat.emissiveIntensity = reduceMotion ? 1.2 : on ? 3 : 0.05;
       strobe.intensity = reduceMotion ? 2 : on ? 9 : 0;
     } else { domeMat.emissiveIntensity = 0.05; strobe.intensity = 0; }

@@ -727,3 +727,20 @@ canvas.sea { display: block; width: 100%; height: 100%; }
 @media (prefers-reduced-motion: reduce) {
   .chart[data-scenario="without"] .search-area { animation: none; transform: scale(2.7); }
 }
+
+/* =====================================================================
+   Sound toggle in the nav
+   ===================================================================== */
+.sound-toggle {
+  display: grid; place-items: center; width: 36px; height: 36px; margin-left: calc(var(--s-200) * -1);
+  border: 0; border-radius: 8px; background: transparent; color: var(--text-muted); cursor: pointer;
+  transition: color 300ms var(--ease), background-color 300ms var(--ease), transform 300ms var(--ease);
+}
+.sound-toggle svg { width: 18px; height: 18px; fill: currentColor; }
+.sound-toggle:hover { color: var(--text); background: rgba(246, 235, 217, 0.06); }
+.sound-toggle:active { transform: scale(0.94); }
+.sound-toggle .sound-waves { display: none; }
+.sound-toggle[aria-pressed="true"] { color: var(--beam); }
+.sound-toggle[aria-pressed="true"] .sound-waves { display: inline; }
+.sound-toggle[aria-pressed="true"] .sound-off { display: none; }
+@media (max-width: 720px) { .sound-toggle { width: 44px; height: 44px; margin-left: auto; margin-right: calc(var(--s-100) * -1); } }
