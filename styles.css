@@ -769,3 +769,15 @@ canvas.sea { display: block; width: 100%; height: 100%; }
 @keyframes intro-beam { 0% { transform: scaleY(0); opacity: 1; } 60% { transform: scaleY(1); opacity: 1; width: 4px; margin-left: -2px; } 100% { transform: scaleY(1); opacity: 0.85; width: 180px; margin-left: -90px; } }
 @keyframes intro-out { to { opacity: 0; visibility: hidden; } }
 .intro-done .intro-overlay { display: none; }
+
+/* =====================================================================
+   Legal page
+   ===================================================================== */
+.legal-grid { display: grid; grid-template-columns: 1fr 3fr; gap: var(--s-700); align-items: start; }
+.legal-toc { position: sticky; top: calc(var(--s-900) + var(--s-200)); }
+.legal-toc ul { margin-top: var(--s-100); display: grid; gap: var(--s-75); }
+.legal-toc a { color: var(--text-muted); transition: color 300ms var(--ease); }
+.legal-toc a:hover { color: var(--text); }
+.legal-text { display: grid; gap: var(--s-600); max-width: 680px; }
+.legal-text section p { margin-top: var(--s-200); }
+@media (max-width: 720px) { .legal-grid { grid-template-columns: 1fr; gap: var(--s-500); } .legal-toc { position: static; } }
