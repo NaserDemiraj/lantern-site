@@ -744,3 +744,28 @@ canvas.sea { display: block; width: 100%; height: 100%; }
 .sound-toggle[aria-pressed="true"] .sound-waves { display: inline; }
 .sound-toggle[aria-pressed="true"] .sound-off { display: none; }
 @media (max-width: 720px) { .sound-toggle { width: 44px; height: 44px; margin-left: auto; margin-right: calc(var(--s-100) * -1); } }
+
+
+/* =====================================================================
+   First-visit intro: a spark in the dark opens into the beam
+   ===================================================================== */
+.intro-overlay { display: none; }
+.intro .intro-overlay {
+  display: block; position: fixed; inset: 0; z-index: 200; background: #000000; cursor: pointer;
+  animation: intro-out 500ms var(--ease) 1150ms forwards;
+}
+.intro-spark, .intro-beam { position: absolute; left: 50%; top: 50%; background: var(--beam); }
+.intro-spark {
+  width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 999px;
+  box-shadow: 0 0 24px 6px rgba(242, 184, 102, 0.6);
+  animation: intro-spark 700ms var(--ease) both;
+}
+.intro-beam {
+  width: 4px; height: 100vh; margin-left: -2px; top: 0; border-radius: 4px;
+  transform: scaleY(0); opacity: 0;
+  animation: intro-beam 900ms var(--ease) 450ms forwards;
+}
+@keyframes intro-spark { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.4); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes intro-beam { 0% { transform: scaleY(0); opacity: 1; } 60% { transform: scaleY(1); opacity: 1; width: 4px; margin-left: -2px; } 100% { transform: scaleY(1); opacity: 0.85; width: 180px; margin-left: -90px; } }
+@keyframes intro-out { to { opacity: 0; visibility: hidden; } }
+.intro-done .intro-overlay { display: none; }

@@ -7,18 +7,31 @@
   <meta name="description" content="Lantern is a pocket distress beacon for sailors and small boat crews. Press once and your position reaches a rescue coordination centre in minutes, with no phone signal and no subscription.">
   <meta property="og:title" content="Lantern | Be found fast, anywhere at sea">
   <meta property="og:description" content="A pocket distress beacon for sailors. One press sends your position to rescue, anywhere on open water.">
-  <meta property="og:image" content="assets/sea-storm.jpg">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://naserdemiraj.github.io/lantern-site/">
+  <meta property="og:site_name" content="Lantern">
+  <meta property="og:image" content="https://naserdemiraj.github.io/lantern-site/assets/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Lantern: be found fast, anywhere at sea. A beam of light breaks through a storm onto a small boat.">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://naserdemiraj.github.io/lantern-site/assets/og.jpg">
   <meta name="theme-color" content="#131209">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23131209'/%3E%3Cpath d='M13 4h6l3 24H10z' fill='%23F2B866'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script>document.documentElement.classList.add('js')</script>
+  <script>
+    document.documentElement.classList.add('js');
+    // the intro plays once per visit, never with reduced motion
+    try {
+      if (!sessionStorage.getItem('lantern-intro') && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('intro');
+    } catch (e) { /* storage blocked: skip the intro */ }
+  </script>
 </head>
 <body>
+  <div class="intro-overlay" aria-hidden="true"><span class="intro-spark"></span><span class="intro-beam"></span></div>
   <a class="skip-link button-sm" href="#main">Skip to content</a>
 
   <header class="nav-wrap">
@@ -59,7 +72,7 @@
         <p class="body-3 hero-sub hero-in">Lantern is a pocket distress beacon for sailors and small boat crews. Press it once and your position reaches a rescue centre in minutes, far beyond phone signal.</p>
         <div class="hero-actions hero-in">
           <a class="btn btn-primary button-md" href="reserve.html">Reserve your beacon</a>
-          <p class="caption-2 hero-proof">Carried by 2,317 crews from our first run, Bergen to the Azores</p>
+          <p class="caption-2 hero-proof">Carried by <span data-count="2317">2,317</span> crews from our first run, Bergen to the Azores</p>
         </div>
       </div>
 

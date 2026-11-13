@@ -31,7 +31,24 @@
       e.isIntersecting ? video.play().catch(() => {}) : video.pause();
     }).observe(hero);
   }
-  requestAnimationFrame(() => hero.classList.add('is-in'));
+  const html = document.documentElement;
+  if (html.classList.contains('intro')) {
+    const overlay = document.querySelector('.intro-overlay');
+    const finish = () => {
+      if (html.classList.contains('intro-done')) return;
+      html.classList.add('intro-done');
+      try { sessionStorage.setItem('lantern-intro', '1'); } catch (e) { /* ignore */ }
+      requestAnimationFrame(() => hero.classList.add('is-in'));
+    };
+    if (overlay) {
+      overlay.addEventListener('animationend', (e) => { if (e.animationName === 'intro-out') finish(); });
+      overlay.addEventListener('click', finish);
+    }
+    document.addEventListener('keydown', finish, { once: true });
+    setTimeout(finish, 2200); // safety net if animations never fire
+  } else {
+    requestAnimationFrame(() => hero.classList.add('is-in'));
+  }
   }
 
   // focus follows the jump for the skip link and the reserve buttons
@@ -81,6 +98,33 @@
       }, { passive: true });
       document.documentElement.addEventListener('pointerleave', () => light.classList.remove('is-on'));
     }
+  }
+
+  /* ---------- Numbers that count up when they matter ---------- */
+  const countUp = (el) => {
+    if (el.dataset.counted) return;
+    el.dataset.counted = '1';
+    const target = Number(el.dataset.count);
+    const fmt = (n) => n.toLocaleString('en-GB');
+    if (reduceMotion) { el.textContent = fmt(target); return; }
+    const t0 = performance.now(), dur = 1400;
+    const tick = (now) => {
+      const k = Math.min(1, (now - t0) / dur);
+      el.textContent = fmt(Math.round(target * (1 - Math.pow(1 - k, 3))));
+      if (k < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  const counters = [...document.querySelectorAll('[data-count]')];
+  const countIO = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (e.isIntersecting && !e.target.dataset.countOn) { countUp(e.target); countIO.unobserve(e.target); }
+  }), { threshold: 1 });
+  counters.forEach((el) => countIO.observe(el));
+  // counters tied to a rescue moment start when that moment lights
+  const litCounters = counters.filter((el) => el.dataset.countOn === 'lit');
+  if (litCounters.length) {
+    new MutationObserver(() => litCounters.forEach((el) => { if (el.closest('.moment').classList.contains('is-lit')) countUp(el); }))
+      .observe(document.getElementById('rescue-scroller'), { subtree: true, attributes: true, attributeFilter: ['class'] });
   }
 
   /* ---------- Rescue timeline: sideways scroll ---------- */
