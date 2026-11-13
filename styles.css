@@ -403,7 +403,10 @@ img, video, canvas { display: block; }
 
 /* page to page cross-fade where supported */
 @view-transition { navigation: auto; }
-::view-transition-old(root), ::view-transition-new(root) { animation-duration: 450ms; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+::view-transition-old(root) { animation: vt-out 380ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+::view-transition-new(root) { animation: vt-in 620ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes vt-out { to { opacity: 0; transform: scale(0.985); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(24px); } }
 
 /* current page in the nav */
 .nav-links a[aria-current="page"]:not(.btn) { color: var(--text); }
@@ -625,3 +628,30 @@ canvas.sea { display: block; width: 100%; height: 100%; }
 .summary-due { margin-top: var(--s-75); }
 .summary-due dd { color: var(--beam); }
 .email-label { margin-top: var(--s-400); }
+
+
+/* =====================================================================
+   The beam as a guide: scroll line and cursor light
+   ===================================================================== */
+.beam-guide {
+  position: fixed; left: 12px; top: 0; bottom: 0; width: 2px; z-index: 40;
+  pointer-events: none; background: rgba(246, 235, 217, 0.06);
+}
+.beam-guide-fill {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+  background: var(--beam); transform-origin: 50% 0; transform: scaleY(0);
+}
+.beam-guide-tip {
+  position: absolute; left: -3px; top: 0; width: 8px; height: 8px; border-radius: 999px;
+  background: var(--beam); box-shadow: 0 0 8px 2px rgba(242, 184, 102, 0.6);
+  transform: translateY(-4px); will-change: transform;
+}
+.cursor-light {
+  position: fixed; left: 0; top: 0; z-index: 45; width: 520px; height: 520px; margin: -260px 0 0 -260px;
+  border-radius: 50%; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle, rgba(242, 184, 102, 0.09) 0%, rgba(242, 184, 102, 0.035) 35%, rgba(242, 184, 102, 0) 70%);
+  will-change: transform, opacity; transition: opacity 600ms var(--ease); visibility: hidden;
+}
+.cursor-light.is-on { opacity: 1; visibility: visible; }
+@media (max-width: 720px) { .beam-guide { left: 4px; width: 1px; } .beam-guide-tip { left: -3px; width: 7px; height: 7px; } }
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) { .cursor-light { display: none; } }
