@@ -781,3 +781,17 @@ canvas.sea { display: block; width: 100%; height: 100%; }
 .legal-text { display: grid; gap: var(--s-600); max-width: 680px; }
 .legal-text section p { margin-top: var(--s-200); }
 @media (max-width: 720px) { .legal-grid { grid-template-columns: 1fr; gap: var(--s-500); } .legal-toc { position: static; } }
+
+/* =====================================================================
+   How this was made
+   ===================================================================== */
+.making-text section > p + p { margin-top: var(--s-200); }
+.making-table { margin-top: var(--s-300); }
+.making-table .compare-table { min-width: 520px; }
+.making-table .compare-table th, .making-table .compare-table td { width: auto; }
+.making-table + p { margin-top: var(--s-300); }
+.tool-list { margin-top: var(--s-300); display: grid; gap: var(--s-200); }
+.tool-list li { display: grid; grid-template-columns: 140px 1fr; gap: var(--s-200); padding-bottom: var(--s-200); border-bottom: 1px solid var(--line); }
+.making-links { margin-top: var(--s-400); display: flex; flex-wrap: wrap; gap: var(--s-100); align-items: center; }
+.footer-links { flex-wrap: wrap; }
+@media (max-width: 720px) { .tool-list li { grid-template-columns: 1fr; gap: var(--s-50); } }
