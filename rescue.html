@@ -58,15 +58,7 @@
       <div class="container rescue-head">
         <div>
           <h2 class="heading-4 reveal-heading" id="rescue-title">Minute by minute</h2>
-          <p class="body-3 muted rescue-intro">Swipe, drag or use the arrows to follow the night from the wave to the lifeboat.</p>
-        </div>
-        <div class="rescue-controls">
-          <button class="round-btn" type="button" data-dir="-1" aria-label="Earlier moment" aria-controls="rescue-scroller">
-            <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H59.31l58.35 58.34a8 8 0 0 1-11.32 11.32l-72-72a8 8 0 0 1 0-11.32l72-72a8 8 0 0 1 11.32 11.32L59.31 120H216a8 8 0 0 1 8 8Z"/></svg>
-          </button>
-          <button class="round-btn" type="button" data-dir="1" aria-label="Later moment" aria-controls="rescue-scroller">
-            <svg viewBox="0 0 256 256" aria-hidden="true"><path d="m221.66 133.66-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg>
-          </button>
+          <p class="body-3 muted rescue-intro">Follow the night from the wave to the lifeboat, minute by minute.</p>
         </div>
       </div>
 
@@ -143,10 +135,10 @@
               <path class="drift-long" d="M300 340C360 330 430 318 500 306C560 296 620 288 690 282"/>
               <circle class="mark-fall" cx="300" cy="340" r="7"/>
               <text class="ch-label" x="246" y="372">22:38</text>
-              <text class="ch-note" x="560" y="330">her drift through the night</text>
-              <circle class="search-area" cx="560" cy="300" r="40"/>
-              <text class="ch-label ch-warn" x="40" y="180">06:10 Search begins</text>
-              <text class="ch-note" x="40" y="200">7 hours 32 minutes after she fell</text>
+              <text class="ch-note" x="330" y="318">her drift through the night</text>
+              <circle class="search-area" cx="640" cy="300" r="40"/>
+              <text class="ch-label ch-warn" x="40" y="150">06:10 Search begins</text>
+              <text class="ch-note" x="40" y="170">7 hours 32 minutes after she fell</text>
             </g>
             <!-- scale and north -->
             <g class="chart-key">
@@ -163,6 +155,7 @@
         </figure>
       </div>
 
+      <p class="container caption-2 without-note" aria-hidden="true">The timeline below is the night with Lantern. Switch back to follow it.</p>
       <div class="rescue-scroller" id="rescue-scroller" tabindex="0" role="region" aria-label="Rescue timeline. Scroll sideways or use the arrow keys.">
         <ol class="rescue-track">
           <li class="rescue-line" aria-hidden="true"><span class="rescue-fill"></span></li>
@@ -214,6 +207,14 @@
       <div class="container rescue-foot">
         <div class="rescue-progress" aria-hidden="true"><span></span></div>
         <p class="caption-5 muted rescue-hint">Swipe or drag sideways</p>
+        <div class="rescue-controls">
+          <button class="round-btn" type="button" data-dir="-1" aria-label="Earlier moment" aria-controls="rescue-scroller">
+            <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H59.31l58.35 58.34a8 8 0 0 1-11.32 11.32l-72-72a8 8 0 0 1 0-11.32l72-72a8 8 0 0 1 11.32 11.32L59.31 120H216a8 8 0 0 1 8 8Z"/></svg>
+          </button>
+          <button class="round-btn" type="button" data-dir="1" aria-label="Later moment" aria-controls="rescue-scroller">
+            <svg viewBox="0 0 256 256" aria-hidden="true"><path d="m221.66 133.66-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg>
+          </button>
+        </div>
       </div>
     </section>
 

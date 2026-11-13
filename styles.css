@@ -711,7 +711,7 @@ canvas.sea { display: block; width: 100%; height: 100%; }
 .seg:hover { color: var(--text); }
 .seg[aria-pressed="true"] { background: var(--beam); color: var(--on-beam); }
 .play-night svg { width: 14px; height: 14px; fill: currentColor; }
-.play-night[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--beam); color: var(--beam); }
+.play-night.is-playing { box-shadow: inset 0 0 0 1px var(--beam); color: var(--beam); }
 
 .without-layer { opacity: 0; transition: opacity 700ms var(--ease); pointer-events: none; }
 .chart[data-scenario="without"] .without-layer { opacity: 1; }
@@ -795,3 +795,41 @@ canvas.sea { display: block; width: 100%; height: 100%; }
 .making-links { margin-top: var(--s-400); display: flex; flex-wrap: wrap; gap: var(--s-100); align-items: center; }
 .footer-links { flex-wrap: wrap; }
 @media (max-width: 720px) { .tool-list li { grid-template-columns: 1fr; gap: var(--s-50); } }
+
+
+/* =====================================================================
+   Second design review fixes
+   ===================================================================== */
+/* compare table: on phones each row becomes a card with every column labelled */
+@media (max-width: 720px) {
+  .compare-scroll:not(.making-table) { overflow: visible; }
+  .compare-scroll:not(.making-table) .compare-table { min-width: 0; }
+  .compare-scroll:not(.making-table) thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .compare-scroll:not(.making-table) tbody tr { display: grid; gap: var(--s-75); padding: var(--s-300) 0; border-bottom: 1px solid var(--line); }
+  .compare-scroll:not(.making-table) tbody th, .compare-scroll:not(.making-table) tbody td { display: block; width: auto; padding: 0; border: 0; }
+  .compare-scroll:not(.making-table) tbody td::before { content: attr(data-label) ": "; color: var(--text-muted); font-weight: 500; }
+  .compare-scroll:not(.making-table) tbody td.is-lantern { color: var(--text); padding-left: var(--s-200); }
+  .compare-scroll:not(.making-table) tbody td.is-lantern::before { color: var(--beam); }
+  .compare-scroll:not(.making-table) tbody td.is-lantern::after { content: ""; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: 999px; background: var(--beam); }
+  .compare-table tbody td.is-lantern::before { position: static; width: auto; height: auto; background: none; border-radius: 0; }
+}
+
+/* rescue: chart and timeline share one screen; arrows sit by the track */
+@media (min-width: 721px) { .chart-svg { max-height: 42vh; } }
+.rescue-foot { justify-content: flex-start; }
+.rescue-foot .rescue-controls { margin-left: auto; }
+.without-note { display: none; margin-top: var(--s-300); color: var(--danger); }
+.rescue[data-scenario="without"] .without-note { display: block; }
+.rescue[data-scenario="without"] .rescue-scroller, .rescue[data-scenario="without"] .rescue-foot { opacity: 0.3; transition: opacity 500ms var(--ease); }
+
+/* home: the product itself in the beacon card, and quieter card buttons */
+.explore-card:has(.explore-product) { background: #181818; }
+.explore-card img.explore-product { object-fit: cover; object-position: 50% 0%; transform: translateY(-12%); transform-origin: 50% 0%; }
+.explore-card:hover img.explore-product { transform: translateY(-12%) scale(1.04); }
+.explore-cta { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px rgba(246, 235, 217, 0.4); }
+.explore-card:hover .explore-cta { background: rgba(246, 235, 217, 0.1); }
+
+/* beacon: a disabled button looks unavailable, not selected; hotspots read as UI */
+.beacon-buttons .btn-primary:disabled { background: transparent; color: var(--text-muted); box-shadow: inset 0 0 0 1px var(--line); opacity: 1; }
+.hotspot-dot { background: #ffffff; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.25); }
+.hotspot:hover .hotspot-dot, .hotspot[aria-expanded="true"] .hotspot-dot { box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.3); }

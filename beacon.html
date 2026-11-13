@@ -91,11 +91,11 @@
           <div class="beacon-controls">
             <p class="title-4 beacon-try-title">Try it</p>
             <div class="beacon-buttons">
-              <button class="btn btn-ghost button-sm" type="button" data-act="cap">Lift the cap</button>
+              <button class="btn btn-ghost button-sm" type="button" data-act="cap" disabled>Lift the cap</button>
               <button class="btn btn-primary button-sm" type="button" data-act="press" disabled>Press for one second</button>
               <button class="btn btn-ghost button-sm" type="button" data-act="reset" hidden>Switch off</button>
             </div>
-            <p class="caption-2 beacon-status" role="status" aria-live="polite">Cap closed. Lift it to reach the gold button.</p>
+            <p class="caption-2 beacon-status" role="status" aria-live="polite">Loading the 3D beacon…</p>
           </div>
         </div>
         <div class="beacon-copy">
@@ -152,12 +152,12 @@
               </tr>
             </thead>
             <tbody class="reveal-stagger">
-              <tr><th scope="row" class="body-5">Calls for help far from land</th><td class="body-6">Only with signal, often gone a few miles out</td><td class="body-6">Only if someone is listening within range</td><td class="body-6 is-lantern">Anywhere with open sky, by satellite</td></tr>
-              <tr><th scope="row" class="body-5">Is still on you after a fall</th><td class="body-6">Usually in a pocket below deck</td><td class="body-6">Often clipped at the helm</td><td class="body-6 is-lantern">Clipped to your lifejacket</td></tr>
-              <tr><th scope="row" class="body-5">Works in the water</th><td class="body-6">Rarely, and it sinks</td><td class="body-6">Some float, few keep working</td><td class="body-6 is-lantern">Floats antenna up and keeps sending</td></tr>
-              <tr><th scope="row" class="body-5">Tells rescuers exactly where you are</th><td class="body-6">Only if you can call and read it out</td><td class="body-6">You describe it by voice</td><td class="body-6 is-lantern">A GPS fix, refreshed every five minutes</td></tr>
-              <tr><th scope="row" class="body-5">Leads the lifeboat to you</th><td class="body-6">No</td><td class="body-6">No</td><td class="body-6 is-lantern">Strobe plus 121.5 MHz homing signal</td></tr>
-              <tr><th scope="row" class="body-5">Needs charging</th><td class="body-6">Every day</td><td class="body-6">Every few days</td><td class="body-6 is-lantern">Battery lasts seven years</td></tr>
+              <tr><th scope="row" class="body-5">Calls for help far from land</th><td class="body-6" data-label="Phone">Only with signal, often gone a few miles out</td><td class="body-6" data-label="Handheld VHF radio">Only if someone is listening within range</td><td class="body-6 is-lantern" data-label="Lantern">Anywhere with open sky, by satellite</td></tr>
+              <tr><th scope="row" class="body-5">Is still on you after a fall</th><td class="body-6" data-label="Phone">Usually in a pocket below deck</td><td class="body-6" data-label="Handheld VHF radio">Often clipped at the helm</td><td class="body-6 is-lantern" data-label="Lantern">Clipped to your lifejacket</td></tr>
+              <tr><th scope="row" class="body-5">Works in the water</th><td class="body-6" data-label="Phone">Rarely, and it sinks</td><td class="body-6" data-label="Handheld VHF radio">Some float, few keep working</td><td class="body-6 is-lantern" data-label="Lantern">Floats antenna up and keeps sending</td></tr>
+              <tr><th scope="row" class="body-5">Tells rescuers exactly where you are</th><td class="body-6" data-label="Phone">Only if you can call and read it out</td><td class="body-6" data-label="Handheld VHF radio">You describe it by voice</td><td class="body-6 is-lantern" data-label="Lantern">A GPS fix, refreshed every five minutes</td></tr>
+              <tr><th scope="row" class="body-5">Leads the lifeboat to you</th><td class="body-6" data-label="Phone">No</td><td class="body-6" data-label="Handheld VHF radio">No</td><td class="body-6 is-lantern" data-label="Lantern">Strobe plus 121.5 MHz homing signal</td></tr>
+              <tr><th scope="row" class="body-5">Needs charging</th><td class="body-6" data-label="Phone">Every day</td><td class="body-6" data-label="Handheld VHF radio">Every few days</td><td class="body-6 is-lantern" data-label="Lantern">Battery lasts seven years</td></tr>
             </tbody>
           </table>
         </div>
