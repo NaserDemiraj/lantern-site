@@ -43,6 +43,46 @@
     });
   });
 
+  /* ---------- The beam as a guide: scroll line and cursor light ---------- */
+  if (document.querySelector('.nav-wrap')) {
+    const guide = document.createElement('div');
+    guide.className = 'beam-guide'; guide.setAttribute('aria-hidden', 'true');
+    guide.innerHTML = '<span class="beam-guide-fill"></span><span class="beam-guide-tip"></span>';
+    document.body.appendChild(guide);
+    const gFill = guide.firstChild, gTip = guide.lastChild;
+    let gTick = false;
+    const updateGuide = () => {
+      gTick = false;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+      gFill.style.transform = 'scaleY(' + p + ')';
+      gTip.style.transform = 'translateY(' + (p * guide.clientHeight - 4) + 'px)';
+    };
+    const queueGuide = () => { if (!gTick) { gTick = true; requestAnimationFrame(updateGuide); } };
+    addEventListener('scroll', queueGuide, { passive: true });
+    addEventListener('resize', queueGuide);
+    updateGuide();
+
+    // a faint pool of light that follows the cursor (mouse and pen only, never touch)
+    if (!reduceMotion && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      const light = document.createElement('div');
+      light.className = 'cursor-light'; light.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(light);
+      let tx = innerWidth / 2, ty = innerHeight / 2, x = tx, y = ty, moving = false;
+      const follow = () => {
+        x += (tx - x) * 0.18; y += (ty - y) * 0.18;
+        light.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+        if (Math.abs(tx - x) + Math.abs(ty - y) > 0.5) requestAnimationFrame(follow); else moving = false;
+      };
+      addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+        tx = e.clientX; ty = e.clientY; light.classList.add('is-on');
+        if (!moving) { moving = true; requestAnimationFrame(follow); }
+      }, { passive: true });
+      document.documentElement.addEventListener('pointerleave', () => light.classList.remove('is-on'));
+    }
+  }
+
   /* ---------- Rescue timeline: sideways scroll ---------- */
   const scroller = document.getElementById('rescue-scroller');
   const moments = scroller ? [...scroller.querySelectorAll('.moment')] : [];
