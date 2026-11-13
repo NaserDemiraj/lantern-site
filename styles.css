@@ -694,3 +694,36 @@ canvas.sea { display: block; width: 100%; height: 100%; }
 .beacon-stage.no-webgl ~ .beacon-controls { display: none; }
 @media (max-width: 720px) { .hotspot-tip { width: 180px; } }
 .beacon-buttons [hidden] { display: none; }
+
+
+/* =====================================================================
+   Rescue: with and without Lantern, and Play the night
+   ===================================================================== */
+.chart-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s-200); margin-top: var(--s-600); }
+.chart-bar + .chart { margin-top: var(--s-200); }
+.segmented { display: inline-flex; padding: var(--s-50); gap: var(--s-50); border-radius: 12px; border: 1px solid var(--line); }
+.seg {
+  min-height: 40px; padding: var(--s-75) var(--s-200); border: 0; border-radius: 8px; cursor: pointer;
+  background: transparent; color: var(--text-muted); font-family: inherit;
+  transition: background-color 300ms var(--ease), color 300ms var(--ease);
+}
+.seg:hover { color: var(--text); }
+.seg[aria-pressed="true"] { background: var(--beam); color: var(--on-beam); }
+.play-night svg { width: 14px; height: 14px; fill: currentColor; }
+.play-night[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--beam); color: var(--beam); }
+
+.without-layer { opacity: 0; transition: opacity 700ms var(--ease); pointer-events: none; }
+.chart[data-scenario="without"] .without-layer { opacity: 1; }
+.chart .route, .chart .pings { transition: opacity 600ms var(--ease), stroke-dashoffset 1400ms var(--ease); }
+.chart[data-scenario="without"] .ch, .chart[data-scenario="without"] .pings, .chart[data-scenario="without"] .route { opacity: 0 !important; }
+.drift-long { fill: none; stroke: rgba(246, 235, 217, 0.45); stroke-width: 1.5; stroke-dasharray: 4 6; }
+.search-area {
+  fill: rgba(255, 138, 122, 0.06); stroke: var(--danger); stroke-width: 1.5; stroke-dasharray: 6 6;
+  transform-box: fill-box; transform-origin: center; transform: scale(0.4);
+}
+.chart[data-scenario="without"] .search-area { animation: search-grow 4s var(--ease) forwards; }
+@keyframes search-grow { from { transform: scale(0.4); } to { transform: scale(2.7); } }
+.ch-warn { fill: var(--danger); }
+@media (prefers-reduced-motion: reduce) {
+  .chart[data-scenario="without"] .search-area { animation: none; transform: scale(2.7); }
+}

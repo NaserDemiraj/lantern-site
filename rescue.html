@@ -64,7 +64,17 @@
       </div>
 
       <div class="container">
-        <figure class="chart reveal-rise" data-step="0">
+        <div class="chart-bar">
+          <div class="segmented" role="group" aria-label="Show the night">
+            <button class="seg button-sm" type="button" data-scenario="with" aria-pressed="true">With Lantern</button>
+            <button class="seg button-sm" type="button" data-scenario="without" aria-pressed="false">Without Lantern</button>
+          </div>
+          <button class="btn btn-ghost button-sm play-night" type="button" aria-controls="rescue-scroller">
+            <svg viewBox="0 0 256 256" aria-hidden="true"><path class="ico-play" d="M240 128a15.74 15.74 0 0 1-7.6 13.51L88.32 229.65a16 16 0 0 1-16.2.3A15.86 15.86 0 0 1 64 216.13V39.87a15.86 15.86 0 0 1 8.12-13.82 16 16 0 0 1 16.2.3l144.08 88.14A15.74 15.74 0 0 1 240 128Z"/></svg>
+            <span>Play the night</span>
+          </button>
+        </div>
+        <figure class="chart reveal-rise" data-step="0" data-scenario="with">
           <div class="chart-scroll" tabindex="0" aria-label="Chart of the rescue. Scroll sideways on small screens.">
           <svg class="chart-svg" viewBox="0 0 1200 440" role="img" aria-labelledby="chart-caption">
             <!-- lat / long grid -->
@@ -120,6 +130,16 @@
             </g>
             <g class="ch" data-from="5">
               <text class="ch-label ch-end" x="410" y="352">Aboard, 23:20</text>
+            </g>
+            <!-- the same night without a beacon -->
+            <g class="without-layer" aria-hidden="true">
+              <path class="drift-long" d="M300 340C360 330 430 318 500 306C560 296 620 288 690 282"/>
+              <circle class="mark-fall" cx="300" cy="340" r="7"/>
+              <text class="ch-label" x="246" y="372">22:38</text>
+              <text class="ch-note" x="560" y="330">her drift through the night</text>
+              <circle class="search-area" cx="560" cy="300" r="40"/>
+              <text class="ch-label ch-warn" x="40" y="180">06:10 Search begins</text>
+              <text class="ch-note" x="40" y="200">7 hours 32 minutes after she fell</text>
             </g>
             <!-- scale and north -->
             <g class="chart-key">

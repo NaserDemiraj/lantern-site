@@ -99,7 +99,7 @@
   const routeLeft = [1, 1, 1, 0.62, 0.1, 0]; // how much of the lifeboat's route is still to draw
   let chartStep = -1;
   const syncChart = (stepIndex) => {
-    if (!chart || stepIndex === chartStep) return;
+    if (!chart || stepIndex === chartStep || scenario !== 'with') return;
     chartStep = stepIndex;
     chart.dataset.step = stepIndex;
     chartParts.forEach((el) => el.classList.toggle('on', Number(el.dataset.from) <= stepIndex));
@@ -108,6 +108,45 @@
     chart.querySelector('.chart-time').textContent = m.querySelector('.moment-time').textContent;
     chart.querySelector('.chart-what').textContent = m.querySelector('h3').textContent;
   };
+
+  // with and without Lantern
+  const segs = [...document.querySelectorAll('.seg')];
+  const WITHOUT_CAPTION = ['06:10', 'Saoirse is found drifting. The search starts 7 hours late.'];
+  let scenario = 'with';
+  const setScenario = (name) => {
+    scenario = name;
+    if (!chart) return;
+    chart.dataset.scenario = name;
+    segs.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.scenario === name)));
+    if (name === 'without') {
+      chart.querySelector('.chart-time').textContent = WITHOUT_CAPTION[0];
+      chart.querySelector('.chart-what').textContent = WITHOUT_CAPTION[1];
+    } else { chartStep = -1; updateRescue(); }
+  };
+  segs.forEach((b) => b.addEventListener('click', () => setScenario(b.dataset.scenario)));
+
+  // play the night: step through the moments on its own
+  const playBtn = document.querySelector('.play-night');
+  let playTimer = 0, playStep = 0;
+  const stopPlay = () => {
+    clearInterval(playTimer); playTimer = 0;
+    if (playBtn) { playBtn.setAttribute('aria-pressed', 'false'); playBtn.querySelector('span').textContent = 'Play the night'; }
+  };
+  if (playBtn) playBtn.addEventListener('click', () => {
+    if (playTimer) return stopPlay();
+    if (scenario !== 'with') setScenario('with');
+    playBtn.setAttribute('aria-pressed', 'true'); playBtn.querySelector('span').textContent = 'Pause';
+    scroller.scrollTo({ left: 0, behavior: 'auto' });
+    let i = 0; playStep = 0; queueRescue();
+    playTimer = setInterval(() => {
+      i += 1;
+      if (i >= moments.length) return stopPlay();
+      playStep = i; queueRescue();
+      scroller.scrollTo({ left: moments[i].offsetLeft - moments[0].offsetLeft, behavior: reduceMotion ? 'auto' : 'smooth' });
+    }, 1700);
+  });
+  // any manual scroll of the timeline takes over from the replay
+  ['wheel', 'pointerdown', 'keydown', 'touchstart'].forEach((ev) => scroller.addEventListener(ev, () => playTimer && stopPlay(), { passive: true }));
 
   let rTick = false;
   const updateRescue = () => {
@@ -119,7 +158,8 @@
     const threshold = box.left + box.width * (0.55 + 0.45 * progress);
     let lastLit = null;
     moments.forEach((m) => {
-      const lit = m.getBoundingClientRect().left < threshold - 8;
+      // during a replay the moments light by the replay count, not by scroll position
+      const lit = playTimer ? moments.indexOf(m) <= playStep : m.getBoundingClientRect().left < threshold - 8;
       m.classList.toggle('is-lit', lit);
       if (lit) lastLit = m;
     });
