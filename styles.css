@@ -137,7 +137,8 @@ img, video, canvas { display: block; }
 .hero-proof { color: var(--text-muted); }
 
 /* hero entrance: one orchestrated moment */
-.js .hero-title .line, .js .hero-in { opacity: 0; transform: translateY(24px); }
+.js .hero-title .line { transform: translateY(24px); }
+.js .hero-in { opacity: 0; transform: translateY(24px); }
 .hero.is-in .hero-title .line, .hero.is-in .hero-in {
   opacity: 1; transform: none;
   transition: opacity 900ms var(--ease), transform 900ms var(--ease);
@@ -174,7 +175,7 @@ img, video, canvas { display: block; }
 /* tagline reveal (B11) */
 .tagline { padding: var(--s-900) 0 calc(var(--s-900) * 1.5); }
 .tagline-text { max-width: 680px; }
-.tagline-text .w { color: rgba(246, 235, 217, 0.28); transition: color 700ms var(--ease); }
+.tagline-text .w { color: rgba(246, 235, 217, 0.38); transition: color 700ms var(--ease); }
 .tagline-text .w.on { color: var(--text); }
 
 /* rescue: a sideways timeline */
@@ -218,7 +219,7 @@ img, video, canvas { display: block; }
   transition: background-color 500ms var(--ease), border-color 500ms var(--ease), transform 500ms var(--ease);
 }
 .moment.is-lit .moment-dot { background: var(--beam); border-color: var(--beam); transform: scale(1.15); }
-.moment-time { font-variant-numeric: tabular-nums; color: rgba(246, 235, 217, 0.35); transition: color 600ms var(--ease); }
+.moment-time { font-variant-numeric: tabular-nums; color: rgba(246, 235, 217, 0.4); transition: color 600ms var(--ease); }
 .moment.is-lit .moment-time { color: var(--text); }
 .moment-end.is-lit .moment-time { color: var(--beam); }
 .moment-elapsed { margin-top: var(--s-100); color: var(--beam); }
@@ -643,7 +644,7 @@ canvas.sea { display: block; width: 100%; height: 100%; }
 }
 .beam-guide-tip {
   position: absolute; left: -3px; top: 0; width: 8px; height: 8px; border-radius: 999px;
-  background: var(--beam); box-shadow: 0 0 8px 2px rgba(242, 184, 102, 0.6);
+  background: var(--beam);
   transform: translateY(-4px); will-change: transform;
 }
 .cursor-light {
@@ -757,7 +758,6 @@ canvas.sea { display: block; width: 100%; height: 100%; }
 .intro-spark, .intro-beam { position: absolute; left: 50%; top: 50%; background: var(--beam); }
 .intro-spark {
   width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 999px;
-  box-shadow: 0 0 24px 6px rgba(242, 184, 102, 0.6);
   animation: intro-spark 700ms var(--ease) both;
 }
 .intro-beam {

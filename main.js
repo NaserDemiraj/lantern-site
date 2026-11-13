@@ -284,7 +284,8 @@
     // page headers: the painting drifts slower than the page
     gsap.utils.toArray('.page-header').forEach((ph) => {
       gsap.to(ph.querySelector('.page-header-media'), { yPercent: 18, ease: 'none', scrollTrigger: { trigger: ph, start: 'top top', end: 'bottom top', scrub: 0.4 } });
-      gsap.from(ph.querySelectorAll('.page-title, .page-lede, .final-actions'), { y: 28, opacity: 0, duration: 1, stagger: 0.12, delay: 0.1, ease: 'expo.out', clearProps: 'transform,opacity' });
+      gsap.from(ph.querySelector('.page-title'), { y: 28, duration: 1, delay: 0.1, ease: 'expo.out', clearProps: 'transform' });
+      gsap.from(ph.querySelectorAll('.page-lede, .final-actions'), { y: 28, opacity: 0, duration: 1, stagger: 0.12, delay: 0.22, ease: 'expo.out', clearProps: 'transform,opacity' });
     });
 
     if (document.querySelector('.beacon-stage')) gsap.from('.beacon-stage', { opacity: 0, scale: 0.94, duration: 1.2, ease: 'expo.out', clearProps: 'transform,opacity', scrollTrigger: once('.beacon-stage') });
