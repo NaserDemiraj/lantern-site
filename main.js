@@ -153,6 +153,11 @@
     chart.querySelector('.chart-what').textContent = m.querySelector('h3').textContent;
   };
 
+  const chartScroll = document.querySelector('.chart-scroll');
+  if (chartScroll && matchMedia('(max-width: 720px)').matches) {
+    requestAnimationFrame(() => { chartScroll.scrollLeft = chartScroll.scrollWidth * 0.18; });
+  }
+
   // with and without Lantern
   const segs = [...document.querySelectorAll('.seg')];
   const WITHOUT_CAPTION = ['06:10', 'Saoirse is found drifting. The search starts 7 hours late.'];
@@ -161,6 +166,8 @@
     scenario = name;
     if (!chart) return;
     chart.dataset.scenario = name;
+    const section = chart.closest('.rescue');
+    if (section) section.dataset.scenario = name;
     segs.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.scenario === name)));
     if (name === 'without') {
       chart.querySelector('.chart-time').textContent = WITHOUT_CAPTION[0];
@@ -174,12 +181,14 @@
   let playTimer = 0, playStep = 0;
   const stopPlay = () => {
     clearInterval(playTimer); playTimer = 0;
-    if (playBtn) { playBtn.setAttribute('aria-pressed', 'false'); playBtn.querySelector('span').textContent = 'Play the night'; }
+    if (playBtn) { playBtn.classList.remove('is-playing'); playBtn.querySelector('span').textContent = 'Play the night'; }
+    if (chart) chart.querySelector('.chart-caption').setAttribute('aria-live', 'polite');
   };
   if (playBtn) playBtn.addEventListener('click', () => {
     if (playTimer) return stopPlay();
     if (scenario !== 'with') setScenario('with');
-    playBtn.setAttribute('aria-pressed', 'true'); playBtn.querySelector('span').textContent = 'Pause';
+    playBtn.classList.add('is-playing'); playBtn.querySelector('span').textContent = 'Pause';
+    if (chart) chart.querySelector('.chart-caption').setAttribute('aria-live', 'off');
     scroller.scrollTo({ left: 0, behavior: 'auto' });
     let i = 0; playStep = 0; queueRescue();
     playTimer = setInterval(() => {
@@ -404,7 +413,7 @@
     setTimeout(() => { // design concept: no backend, so nothing is actually sent
       const n = count();
       btn.disabled = false; btn.textContent = 'Reserve your beacon';
-      form.reset(); renderQty();
+      input.value = ''; renderQty(); // keep the quantity so the summary matches the confirmation
       msg.classList.remove('is-error');
       msg.textContent = `Reserved ${n === 1 ? 'one beacon' : n + ' beacons'} for ${value}. We will email you a week before they ship.`;
     }, 900);
