@@ -7,11 +7,21 @@
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let THREE, RoundedBoxGeometry, RoomEnvironment;
+  // three.js is large and building the scene is heavy, so wait until the stage is near the screen
+  await new Promise((resolve) => {
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      const idle = () => (window.requestIdleCallback ? requestIdleCallback(resolve, { timeout: 2000 }) : setTimeout(resolve, 300));
+      document.readyState === 'complete' ? idle() : addEventListener('load', idle, { once: true });
+    }, { rootMargin: '300px 0px' });
+    io.observe(stage);
+  });
+
+  let THREE, RoundedBoxGeometry;
   try {
     THREE = await import('three');
     ({ RoundedBoxGeometry } = await import('three/addons/geometries/RoundedBoxGeometry.js'));
-    ({ RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js'));
   } catch (err) {
     stage.classList.add('no-webgl');
     return;
@@ -30,9 +40,6 @@
   renderer.toneMappingExposure = 1.05;
 
   const scene = new THREE.Scene();
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  scene.environmentIntensity = 0.35;
 
   const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 50);
   camera.position.set(0, 0.4, 3.35);
@@ -43,7 +50,7 @@
   beam.position.set(0.35, 4.2, 1.6);
   beam.target.position.set(0, 0, 0);
   scene.add(beam, beam.target);
-  scene.add(new THREE.HemisphereLight(0x3a3a46, 0x131209, 0.6));
+  scene.add(new THREE.HemisphereLight(0x5a5a66, 0x1c1a12, 1.1));
   const rim = new THREE.DirectionalLight(0x8fa4c4, 0.9); // cold storm light from behind
   rim.position.set(-2.5, 1.5, -3);
   scene.add(rim);
@@ -64,7 +71,7 @@
   const beacon = new THREE.Group();
   const W = 0.48, H = 0.92, D = 0.31;
 
-  const body = new THREE.Mesh(new RoundedBoxGeometry(W, H, D, 6, 0.09), graphite);
+  const body = new THREE.Mesh(new RoundedBoxGeometry(W, H, D, 4, 0.09), graphite);
   beacon.add(body);
 
   // printed label: wordmark, two-step instructions, frequency and the self test mark
@@ -275,7 +282,14 @@
       const key = spot.dataset.anchor;
       tmp.copy(anchors[key]).applyMatrix4(beacon.matrixWorld).project(camera);
       spot.style.transform = 'translate(' + ((tmp.x + 1) / 2 * r.width) + 'px,' + ((1 - tmp.y) / 2 * r.height) + 'px)';
-      spot.classList.toggle('is-hidden', !!frontFacing[key] && !facing);
+      const hidden = !!frontFacing[key] && !facing;
+      if (spot.classList.contains('is-hidden') !== hidden) {
+        spot.classList.toggle('is-hidden', hidden);
+        // a dot turned away from you is also out of reach for keyboard and screen readers
+        spot.tabIndex = hidden ? -1 : 0;
+        spot.toggleAttribute('aria-hidden', hidden);
+        if (hidden) spot.setAttribute('aria-expanded', 'false');
+      }
     });
   };
 
