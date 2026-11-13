@@ -56,10 +56,41 @@
 
     <section class="section beacon" aria-labelledby="beacon-title">
       <div class="container beacon-grid">
-        <figure class="beacon-stage">
-          <canvas class="beacon-canvas" role="img" aria-label="A 3D model of the Lantern beacon: a graphite body the size of a phone with a printed label, a gold button under a flip cap, a clear strobe dome on top and a short antenna."></canvas>
-          <figcaption class="caption-5 muted beacon-hint">Drag to turn it</figcaption>
-        </figure>
+        <div class="beacon-try">
+          <figure class="beacon-stage">
+            <canvas class="beacon-canvas" role="img" aria-label="A 3D model of the Lantern beacon: a graphite body the size of a phone with a printed label, a gold button under a flip cap, a clear strobe dome on top and a short antenna."></canvas>
+            <button class="hotspot" type="button" data-anchor="strobe" aria-expanded="false">
+              <span class="hotspot-dot" aria-hidden="true"></span>
+              <span class="sr-only">Strobe</span>
+              <span class="hotspot-tip"><strong class="title-4">Strobe</strong><span class="caption-2">A double white flash every two seconds, visible at 2.4 km.</span></span>
+            </button>
+            <button class="hotspot" type="button" data-anchor="antenna" aria-expanded="false">
+              <span class="hotspot-dot" aria-hidden="true"></span>
+              <span class="sr-only">406 MHz antenna</span>
+              <span class="hotspot-tip"><strong class="title-4">406 MHz antenna</strong><span class="caption-2">Sends your GPS position to the Cospas Sarsat satellites, plus a 121.5 MHz homing signal.</span></span>
+            </button>
+            <button class="hotspot" type="button" data-anchor="button" aria-expanded="false">
+              <span class="hotspot-dot" aria-hidden="true"></span>
+              <span class="sr-only">Gold button</span>
+              <span class="hotspot-tip"><strong class="title-4">Gold button</strong><span class="caption-2">Under the flip cap, so it cannot go off in a bag. Hold it for one second.</span></span>
+            </button>
+            <button class="hotspot" type="button" data-anchor="test" aria-expanded="false">
+              <span class="hotspot-dot" aria-hidden="true"></span>
+              <span class="sr-only">Self test</span>
+              <span class="hotspot-tip"><strong class="title-4">Self test</strong><span class="caption-2">Press once a month. A green flash checks the battery, GPS and transmitter without sending an alert.</span></span>
+            </button>
+            <figcaption class="caption-5 muted beacon-hint">Drag to turn it. Tap the dots to see each part.</figcaption>
+          </figure>
+          <div class="beacon-controls">
+            <p class="title-4 beacon-try-title">Try it</p>
+            <div class="beacon-buttons">
+              <button class="btn btn-ghost button-sm" type="button" data-act="cap">Lift the cap</button>
+              <button class="btn btn-primary button-sm" type="button" data-act="press" disabled>Press for one second</button>
+              <button class="btn btn-ghost button-sm" type="button" data-act="reset" hidden>Switch off</button>
+            </div>
+            <p class="caption-2 beacon-status" role="status" aria-live="polite">Cap closed. Lift it to reach the gold button.</p>
+          </div>
+        </div>
         <div class="beacon-copy">
           <h2 class="heading-4 reveal-heading" id="beacon-title">What it does</h2>
           <ul class="features reveal-stagger">
