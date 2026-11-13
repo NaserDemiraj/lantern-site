@@ -142,6 +142,30 @@
   beacon.add(loop);
 
   beacon.rotation.set(0.12, -0.35, 0);
+  // status LED by the label: amber while it finds a fix
+  const ledMat = new THREE.MeshStandardMaterial({ color: 0x3a2a12, emissive: 0xffa632, emissiveIntensity: 0 });
+  const led = new THREE.Mesh(new THREE.SphereGeometry(0.014, 16, 12), ledMat);
+  led.position.set(0.14, 0.17, D / 2 + 0.01);
+  beacon.add(led);
+
+  // signal rings that rise from the antenna once the alert is sent
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0xF2B866, transparent: true, opacity: 0, depthWrite: false });
+  const rings = [0, 1, 2].map(() => {
+    const r = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.004, 8, 48), ringMat.clone());
+    r.position.set(0.15, H / 2 + 0.34, -0.04);
+    beacon.add(r);
+    return r;
+  });
+
+  // where the hotspots sit, in the beacon's own space
+  const anchors = {
+    strobe: new THREE.Vector3(0, H / 2 + 0.13, 0),
+    antenna: new THREE.Vector3(0.15, H / 2 + 0.3, -0.04),
+    button: new THREE.Vector3(0, 0.03, D / 2 + 0.04),
+    test: new THREE.Vector3(0.14, -0.21, D / 2 + 0.02)
+  };
+  const frontFacing = { button: true, test: true };
+
   scene.add(beacon);
 
   // a soft pool of light on the "water" under the beacon
@@ -189,6 +213,71 @@
     if (e.key === 'ArrowRight') { userYaw += 0.25; needsRender = true; e.preventDefault(); }
   });
 
+  // ---------- Try it: lift the cap, press, watch it call for help ----------
+  // mode: 'closed' | 'open' (cap lifted) | 'fixing' (amber, finding GPS) | 'active' (alert sent)
+  let mode = 'closed', modeAt = 0, capTarget = 0, capAngle = 0, pressDepth = 0;
+  const controls = stage.parentElement.querySelector('.beacon-controls');
+  const statusEl = controls && controls.querySelector('.beacon-status');
+  const capBtn = controls && controls.querySelector('[data-act="cap"]');
+  const pressBtn = controls && controls.querySelector('[data-act="press"]');
+  const resetBtn = controls && controls.querySelector('[data-act="reset"]');
+  const STATUS = {
+    closed: 'Cap closed. Lift it to reach the gold button.',
+    open: 'Cap open. Press the gold button for one second.',
+    fixing: 'Light amber. Finding a GPS fix\u2026',
+    active: 'Alert sent. Strobe and homing signal are on, and a fresh position goes out every five minutes.'
+  };
+  const setMode = (m) => {
+    mode = m; modeAt = clock.getElapsedTime();
+    capTarget = m === 'closed' ? 0 : 1;
+    stage.classList.toggle('is-active', m === 'fixing' || m === 'active');
+    if (statusEl) statusEl.textContent = STATUS[m];
+    if (capBtn) { capBtn.textContent = m === 'closed' ? 'Lift the cap' : 'Close the cap'; capBtn.disabled = m === 'fixing' || m === 'active'; }
+    if (pressBtn) pressBtn.disabled = m !== 'open';
+    if (resetBtn) resetBtn.hidden = !(m === 'fixing' || m === 'active');
+    kick();
+  };
+  if (capBtn) capBtn.addEventListener('click', () => setMode(mode === 'closed' ? 'open' : 'closed'));
+  if (pressBtn) pressBtn.addEventListener('click', () => { if (mode === 'open') setMode('fixing'); });
+  if (resetBtn) resetBtn.addEventListener('click', () => setMode('closed'));
+
+  // a click (not a drag) on the cap or the button does the same as the controls
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  let downAt = null;
+  canvas.addEventListener('pointerdown', (e) => { downAt = { x: e.clientX, y: e.clientY }; });
+  canvas.addEventListener('pointerup', (e) => {
+    if (!downAt || Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) > 6) return;
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects([cap, button], false)[0];
+    if (!hit) return;
+    if (hit.object === cap && (mode === 'closed' || mode === 'open')) setMode(mode === 'closed' ? 'open' : 'closed');
+    else if (hit.object === button && mode === 'open') setMode('fixing');
+  });
+
+  // hotspots: HTML buttons pinned to points on the model
+  const spots = [...stage.querySelectorAll('.hotspot')];
+  spots.forEach((spot) => spot.addEventListener('click', () => {
+    const open = spot.getAttribute('aria-expanded') !== 'true';
+    spots.forEach((o) => o.setAttribute('aria-expanded', 'false'));
+    spot.setAttribute('aria-expanded', String(open));
+  }));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') spots.forEach((o) => o.setAttribute('aria-expanded', 'false')); });
+  const tmp = new THREE.Vector3(), camDir = new THREE.Vector3(), fwd = new THREE.Vector3();
+  const placeSpots = () => {
+    const r = canvas.getBoundingClientRect();
+    camera.getWorldDirection(camDir);
+    fwd.set(0, 0, 1).applyQuaternion(beacon.quaternion);
+    const facing = fwd.dot(camDir) < -0.25; // the front of the beacon faces the camera
+    spots.forEach((spot) => {
+      const key = spot.dataset.anchor;
+      tmp.copy(anchors[key]).applyMatrix4(beacon.matrixWorld).project(camera);
+      spot.style.transform = 'translate(' + ((tmp.x + 1) / 2 * r.width) + 'px,' + ((1 - tmp.y) / 2 * r.height) + 'px)';
+      spot.classList.toggle('is-hidden', !!frontFacing[key] && !facing);
+    });
+  };
+
   // ---------- Loop: only while visible ----------
   let visible = false, needsRender = true, rafId = 0;
   const clock = new THREE.Clock();
@@ -210,23 +299,46 @@
       beacon.rotation.y = -0.35 + userYaw + Math.sin(t * 0.45) * 0.35 + (p - 0.5) * 0.9;
       beacon.position.y = Math.sin(t * 1.1) * 0.025; // bobbing on the swell
       beacon.rotation.z = Math.sin(t * 0.8) * 0.03;
-      // the cap lifts as the section comes in, showing the button
-      capPivot.rotation.x = -Math.min(1, Math.max(0, (p - 0.25) / 0.3)) * 0.95;
-      // strobe: a double flash every 2 seconds (well under 3 flashes per second)
-      const c = t % 2;
-      const on = (c < 0.07) || (c > 0.22 && c < 0.29);
-      domeMat.emissiveIntensity = on ? 2.4 : 0.05;
-      strobe.intensity = on ? 6 : 0;
+      capAngle += (capTarget - capAngle) * 0.12;
     } else {
       beacon.rotation.y = -0.35 + userYaw;
-      capPivot.rotation.x = -0.95;
-      domeMat.emissiveIntensity = 0.6; // a steady glow, no flashing
-      strobe.intensity = 1.2;
+      capAngle = capTarget;
     }
+    capPivot.rotation.x = -capAngle * 0.95;
+
+    const since = t - modeAt;
+    if (mode === 'fixing' && since > 1.6) setMode('active');
+    // the button sinks while pressed, then springs back
+    pressDepth += ((mode === 'fixing' && since < 0.9 ? 1 : 0) - pressDepth) * 0.3;
+    button.position.z = D / 2 + 0.018 - pressDepth * 0.012;
+    // amber LED blinks while finding a fix, then stays on
+    ledMat.emissiveIntensity = mode === 'fixing' ? (reduceMotion || Math.floor(since * 4) % 2 ? 2.2 : 0.2) : mode === 'active' ? 2.2 : 0;
+    // strobe: a double flash every 2 seconds once active (well under 3 flashes per second)
+    if (mode === 'active') {
+      const c = since % 2;
+      const on = c < 0.07 || (c > 0.22 && c < 0.29);
+      domeMat.emissiveIntensity = reduceMotion ? 1.2 : on ? 3 : 0.05;
+      strobe.intensity = reduceMotion ? 2 : on ? 9 : 0;
+    } else { domeMat.emissiveIntensity = 0.05; strobe.intensity = 0; }
+    // signal rings rise and fade from the antenna
+    rings.forEach((ring, i) => {
+      if (mode !== 'active' || reduceMotion) { ring.material.opacity = 0; return; }
+      const k = ((since + i * 0.6) % 1.8) / 1.8;
+      ring.scale.setScalar(1 + k * 3.2); // waves spreading out from the antenna tip, facing you
+      ring.material.opacity = 0.7 * (1 - k);
+    });
+    // night mode while it calls for help: the beam dims so the strobe carries the scene
+    const night = mode === 'fixing' || mode === 'active';
+    const ease = reduceMotion ? 1 : 0.08;
+    beam.intensity += ((night ? 18 : 70) - beam.intensity) * ease;
+    fill.intensity += ((night ? 0.25 : 1.1) - fill.intensity) * ease;
+    beacon.updateMatrixWorld();
+    placeSpots();
 
     renderer.render(scene, camera);
     needsRender = false;
-    if (visible && (!reduceMotion || dragging || needsRender)) rafId = requestAnimationFrame(frame);
+    const settling = Math.abs(capTarget - capAngle) > 0.01 || pressDepth > 0.01 || mode === 'fixing';
+    if (visible && (!reduceMotion || dragging || needsRender || settling)) rafId = requestAnimationFrame(frame);
   };
 
   const kick = () => { if (!rafId) rafId = requestAnimationFrame(frame); };
@@ -237,5 +349,6 @@
     canvas.addEventListener('keydown', kick);
   }
   resize();
+  setMode('closed');
   kick();
 })();
